@@ -24,11 +24,11 @@ RoomReservationAngular is a web application developed with Angular that allows u
 
 | | | |
 | :---: | :---: | :---: |
-| <kbd><img src="img/01.png" width="35%" alt="RoomReservationAngular_01"></kbd> | <kbd><img src="img/02.png" width="50%" alt="RoomReservationAngular_02"></kbd> | <kbd><img src="img/03.png" width="50%" alt="RoomReservationAngular_03"></kbd> |
-| <kbd><img src="img/04.png" width="50%" alt="RoomReservationAngular_04"></kbd> | <kbd><img src="img/05.png" width="50%" alt="RoomReservationAngular_05"></kbd> | <kbd><img src="img/06.png" width="50%" alt="RoomReservationAngular_06"></kbd> |
-| <kbd><img src="img/07.png" width="50%" alt="RoomReservationAngular_07"></kbd> | <kbd><img src="img/08.png" width="40%" alt="RoomReservationAngular_08"></kbd> | <kbd><img src="img/09.png" width="50%" alt="RoomReservationAngular_09"></kbd> |
-| <kbd><img src="img/10.png" width="50%" alt="RoomReservationAngular_10"></kbd> | <kbd><img src="img/11.png" width="50%" alt="RoomReservationAngular_11"></kbd> | <kbd><img src="img/12.png" width="35%" alt="RoomReservationAngular_12"></kbd> |
-| <kbd><img src="img/13.png" width="60%" alt="RoomReservationAngular_13"></kbd> |
+| <kbd><img src="img/01.png" width="60%" height="90%" alt="RoomReservationAngular_01"></kbd> | <kbd><img src="img/02.png" width="90%" height="90%" alt="RoomReservationAngular_02"></kbd> | <kbd><img src="img/03.png" width="90%" height="90%" alt="RoomReservationAngular_03"></kbd> |
+| <kbd><img src="img/04.png" width="80%" height="90%" alt="RoomReservationAngular_04"></kbd> | <kbd><img src="img/05.png" width="70%" height="90%" alt="RoomReservationAngular_05"></kbd> | <kbd><img src="img/06.png" width="90%" height="90%" alt="RoomReservationAngular_06"></kbd> |
+| <kbd><img src="img/07.png" width="90%" height="90%" alt="RoomReservationAngular_07"></kbd> | <kbd><img src="img/08.png" width="60%" height="90%" alt="RoomReservationAngular_08"></kbd> | <kbd><img src="img/09.png" width="90%" height="90%" alt="RoomReservationAngular_09"></kbd> |
+| <kbd><img src="img/10.png" width="90%" height="90%" alt="RoomReservationAngular_10"></kbd> | <kbd><img src="img/11.png" width="90%" height="90%" alt="RoomReservationAngular_11"></kbd> | <kbd><img src="img/12.png" width="60%" height="90%" alt="RoomReservationAngular_12"></kbd> |
+| <kbd><img src="img/13.png" width="90%" height="90%" alt="RoomReservationAngular_13"></kbd> |
 
 RoomReservationAngular/  
 ├─── app/  
