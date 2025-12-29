@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute, RouterModule } from '@angular/router';
+import { ActivatedRoute, RouterModule, Router } from '@angular/router';
+import { ReservationService } from '../../../services/reservation.service';
 
 @Component({
   selector: 'app-payment-cancel',
@@ -56,9 +57,35 @@ import { ActivatedRoute, RouterModule } from '@angular/router';
 export class PaymentCancelComponent implements OnInit {
   reservationId: string | null = null;
 
-  constructor(private route: ActivatedRoute) {}
+  constructor(
+    private route: ActivatedRoute,
+    private reservationService: ReservationService,
+    private router: Router
+  ) {}
 
   ngOnInit(): void {
-    this.reservationId = this.route.snapshot.queryParamMap.get('reservation_id');
+    const queryReservationId = this.route.snapshot.queryParamMap.get('reservation_id');
+    const storedReservationId = localStorage.getItem('pending_reservation_id');
+
+    // Prioritize query param, fallback to stored ID
+    const idToCancel = queryReservationId || storedReservationId;
+
+    if (idToCancel) {
+      this.reservationId = idToCancel; // For display
+      const id = parseInt(idToCancel, 10);
+      if (!isNaN(id)) {
+        this.cancelReservation(id);
+      }
+    }
+
+    // Clear the pending ID as we are handling it now
+    localStorage.removeItem('pending_reservation_id');
+  }
+
+  cancelReservation(id: number) {
+    this.reservationService.cancelReservation(id).subscribe({
+      next: () => console.log('Reservation cancelled successfully on cancel page'),
+      error: (err) => console.error('Error cancelling reservation on cancel page', err),
+    });
   }
 }

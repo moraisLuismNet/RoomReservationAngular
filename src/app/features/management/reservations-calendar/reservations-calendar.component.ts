@@ -69,8 +69,11 @@ import { FormsModule } from '@angular/forms';
                 </tr>
               </thead>
               <tbody class="divide-y divide-gray-200">
-                <tr *ngFor="let booking of currentBookings" class="hover:bg-gray-50">
-                  <td class="px-4 py-3 text-sm text-gray-900">Habitación {{ booking.roomId }}</td>
+                @for (booking of currentBookings; track booking.reservationId) {
+                <tr class="hover:bg-gray-50">
+                  <td class="px-4 py-3 text-sm text-gray-900">
+                    Room {{ booking.room?.roomNumber }}
+                  </td>
                   <td class="px-4 py-3 text-sm text-gray-900">
                     {{ booking.user?.email || 'not specified' }}
                   </td>
@@ -82,7 +85,7 @@ import { FormsModule } from '@angular/forms';
                   </td>
                   <td class="px-4 py-3 text-sm text-gray-900">{{ booking.numberOfGuests }}</td>
                 </tr>
-                @if (currentBookings.length === 0) {
+                } @if (currentBookings.length === 0) {
                 <tr>
                   <td colspan="5" class="px-4 py-4 text-center text-sm text-gray-500">
                     There are no bookings during this period.
@@ -139,7 +142,7 @@ export class ReservationsCalendarComponent implements OnInit {
         this.calendarOptions = {
           ...this.calendarOptions,
           events: activeForCalendar.map((r) => ({
-            title: `Habitación ${r.roomId} (${r.numberOfGuests}p)`,
+            title: `Room ${r.room?.roomNumber} (${r.numberOfGuests}p)`,
             start: r.checkInDate,
             end: r.checkOutDate,
             allDay: true,

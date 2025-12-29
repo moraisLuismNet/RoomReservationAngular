@@ -49,7 +49,6 @@ import { ConfirmationModalComponent } from '../confirmation-modal/confirmation-m
             <!-- Admin Controls -->
             @if (isAdmin) {
             <div class="mb-6 p-4 bg-gray-50 rounded-lg border border-gray-200">
-              <h3 class="text-lg font-medium text-gray-900 mb-2">Admin Controls</h3>
               <div class="flex space-x-3">
                 <button
                   (click)="toggleEditMode()"
@@ -122,48 +121,6 @@ import { ConfirmationModalComponent } from '../confirmation-modal/confirmation-m
             </div>
             } @if (!isEditMode) {
             <p class="text-3xl text-gray-900 mt-2">€{{ room.pricePerNight }} / night</p>
-            } @if (isAdmin) {
-            <div class="mt-8">
-              <h3 class="text-lg font-bold text-gray-900 mb-4">Room Reservations</h3>
-              <div class="overflow-hidden shadow ring-1 ring-black ring-opacity-5 md:rounded-lg">
-                <table class="min-w-full divide-y divide-gray-300">
-                  <thead class="bg-gray-50">
-                    <tr>
-                      <th
-                        scope="col"
-                        class="py-2 pl-4 pr-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                      >
-                        Dates
-                      </th>
-                      <th
-                        scope="col"
-                        class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                      >
-                        User
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody class="divide-y divide-gray-200 bg-white">
-                    <tr *ngFor="let res of futureReservations">
-                      <td class="whitespace-nowrap py-2 pl-4 pr-3 text-xs text-gray-900">
-                        {{ res.checkInDate | date : 'shortDate' }} -
-                        {{ res.checkOutDate | date : 'shortDate' }}
-                      </td>
-                      <td class="whitespace-nowrap px-3 py-2 text-xs text-gray-500">
-                        {{ res.user?.email || 'Unknown' }}
-                      </td>
-                    </tr>
-                    @if (futureReservations.length === 0) {
-                    <tr>
-                      <td colspan="2" class="px-3 py-2 text-sm text-gray-500 text-center">
-                        No reservations
-                      </td>
-                    </tr>
-                    }
-                  </tbody>
-                </table>
-              </div>
-            </div>
             } @if (!isLoggedIn) {
             <div class="mt-8">
               <p class="text-gray-500 mb-4">You need to be logged in to make a reservation.</p>
@@ -228,13 +185,24 @@ import { ConfirmationModalComponent } from '../confirmation-modal/confirmation-m
                   </div>
                   }
 
-                  <button
-                    type="submit"
-                    [disabled]="bookingForm.invalid || isSubmitting"
-                    class="w-full bg-indigo-600 border border-transparent rounded-md py-3 px-8 flex items-center justify-center text-base font-medium text-white hover:bg-indigo-700 disabled:opacity-50"
-                  >
-                    {{ isSubmitting ? 'Processing...' : 'Proceed to Payment' }}
-                  </button>
+                  <div class="flex space-x-3">
+                    @if (hasDatesSelected) {
+                    <button
+                      type="button"
+                      (click)="resetForm()"
+                      class="flex-1 bg-white border border-gray-300 rounded-md py-3 px-8 flex items-center justify-center text-base font-medium text-gray-700 hover:bg-gray-50 transition-colors"
+                    >
+                      Cancel
+                    </button>
+                    }
+                    <button
+                      type="submit"
+                      [disabled]="bookingForm.invalid || isSubmitting"
+                      class="flex-1 bg-indigo-600 border border-transparent rounded-md py-3 px-8 flex items-center justify-center text-base font-medium text-white hover:bg-indigo-700 disabled:opacity-50 transition-colors"
+                    >
+                      {{ isSubmitting ? 'Processing...' : 'Proceed to Payment' }}
+                    </button>
+                  </div>
 
                   <p class="text-xs text-gray-500 text-center mt-2">
                     You will be redirected to Stripe for secure payment
@@ -242,35 +210,18 @@ import { ConfirmationModalComponent } from '../confirmation-modal/confirmation-m
                 </div>
               </form>
             </div>
-            }
-
+            } @if (!isAdmin) {
             <div
               class="py-10 lg:pt-6 lg:pb-16 lg:col-start-1 lg:col-span-2 lg:border-r lg:border-gray-200 lg:pr-8"
             >
               <div>
                 <h3 class="sr-only">Description</h3>
                 <div class="space-y-6">
-                  @if (!isEditMode) {
                   <p class="text-base text-gray-900">{{ room.description }}</p>
-                  } @else {
-                  <p class="text-base text-gray-500 italic">Editing description above...</p>
-                  }
-                </div>
-              </div>
-              <div class="mt-10">
-                <h3 class="text-sm font-medium text-gray-900">Details</h3>
-                <div class="mt-4">
-                  <ul role="list" class="pl-4 list-disc text-sm space-y-2">
-                    <li class="text-gray-400">
-                      <span class="text-gray-600">Type: {{ room.roomTypeName }}</span>
-                    </li>
-                    <li class="text-gray-400">
-                      <span class="text-gray-600">Capacity: {{ room.capacity }} guests</span>
-                    </li>
-                  </ul>
                 </div>
               </div>
             </div>
+            }
           </div>
         </div>
       </div>
@@ -352,6 +303,12 @@ export class RoomDetailComponent implements OnInit {
     return 0;
   }
 
+  get hasDatesSelected(): boolean {
+    const checkIn = this.bookingForm.get('checkInDate')?.value;
+    const checkOut = this.bookingForm.get('checkOutDate')?.value;
+    return !!(checkIn && checkOut);
+  }
+
   get isLoggedIn(): boolean {
     return this.authService.isLoggedIn();
   }
@@ -380,12 +337,30 @@ export class RoomDetailComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.checkAndCancelPendingReservation();
     const id = this.route.snapshot.paramMap.get('id');
     if (id) {
       const roomId = parseInt(id, 10);
       if (!isNaN(roomId)) {
         this.loadRoom(roomId);
         this.loadRoomTypes();
+      }
+    }
+  }
+
+  checkAndCancelPendingReservation() {
+    const pendingReservationId = localStorage.getItem('pending_reservation_id');
+    if (pendingReservationId) {
+      const id = parseInt(pendingReservationId, 10);
+      if (!isNaN(id)) {
+        console.log('Found pending reservation, cancelling...', id);
+        this.reservationService.cancelReservation(id).subscribe({
+          next: () => console.log('Pending reservation cancelled successfully'),
+          error: (err) => console.error('Error cancelling pending reservation', err),
+          complete: () => localStorage.removeItem('pending_reservation_id'),
+        });
+      } else {
+        localStorage.removeItem('pending_reservation_id');
       }
     }
   }
@@ -600,6 +575,10 @@ export class RoomDetailComponent implements OnInit {
             })
             .subscribe({
               next: (checkoutResponse) => {
+                // Save reservation ID to localStorage to handle "Back" navigation
+                if (response.reservationId) {
+                  localStorage.setItem('pending_reservation_id', response.reservationId.toString());
+                }
                 // Redirect to Stripe checkout using the session URL
                 this.paymentService.redirectToCheckout(checkoutResponse.sessionUrl);
               },
@@ -638,5 +617,16 @@ export class RoomDetailComponent implements OnInit {
     const date2 = new Date(end);
     const timeDiff = Math.abs(date2.getTime() - date1.getTime());
     return Math.ceil(timeDiff / (1000 * 3600 * 24));
+  }
+
+  resetForm() {
+    this.bookingForm.reset({
+      checkInDate: '',
+      checkOutDate: '',
+      numberOfGuests: 1,
+    });
+    this.message = '';
+    this.isError = false;
+    this.setMinDates();
   }
 }

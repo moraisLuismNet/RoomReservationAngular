@@ -60,7 +60,8 @@ import { Reservation } from '../../../models/reservation.model';
                 </tr>
               </thead>
               <tbody class="bg-white divide-y divide-gray-200">
-                <tr *ngFor="let res of activeReservationsList">
+                @for (res of activeReservationsList; track res.reservationId) {
+                <tr>
                   <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                     {{ res.reservationId }}
                   </td>
@@ -68,7 +69,7 @@ import { Reservation } from '../../../models/reservation.model';
                     {{ res.user?.email }}
                   </td>
                   <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    Room #{{ res.roomId }}
+                    Room {{ res.room?.roomNumber || '#' + res.roomId }}
                   </td>
                   <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                     {{ res.checkInDate | date : 'shortDate' }}
@@ -100,6 +101,7 @@ import { Reservation } from '../../../models/reservation.model';
                     </span>
                   </td>
                 </tr>
+                }
               </tbody>
             </table>
           </div>

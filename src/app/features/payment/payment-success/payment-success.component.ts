@@ -102,6 +102,9 @@ export class PaymentSuccessComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    // Clear pending reservation ID as payment was successful
+    localStorage.removeItem('pending_reservation_id');
+
     const sessionId = this.route.snapshot.queryParamMap.get('session_id');
     this.reservationId = this.route.snapshot.queryParamMap.get('reservation_id');
 

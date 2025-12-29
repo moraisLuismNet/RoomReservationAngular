@@ -1,9 +1,12 @@
 import { User } from './user.model';
+import { Room } from './room.model';
 
 export interface Reservation {
   reservationId: number;
   statusId: number;
+
   user?: User;
+  room?: Room;
   roomId: number;
   reservationDate: string;
   checkInDate: string;

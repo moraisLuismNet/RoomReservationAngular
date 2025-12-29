@@ -22,18 +22,45 @@ RoomReservationAngular is a web application developed with Angular that allows u
 - **Calendar**: FullCalendar
 - **Language**: TypeScript
 
-![RoomReservationAngular](img/01.png)
-![RoomReservationAngular](img/02.png)
-![RoomReservationAngular](img/03.png)
-![RoomReservationAngular](img/04.png)
-![RoomReservationAngular](img/05.png)
-![RoomReservationAngular](img/06.png)
-![RoomReservationAngular](img/07.png)
-![RoomReservationAngular](img/08.png)
-![RoomReservationAngular](img/09.png)
-![RoomReservationAngular](img/10.png)
-![RoomReservationAngular](img/11.png)
-![RoomReservationAngular](img/12.png)
+<kbd>
+  <img src="img/01.png" width="25%" alt="RoomReservationAngular_01">
+</kbd>
+<kbd>
+  <img src="img/02.png" width="35%" alt="RoomReservationAngular_02">
+</kbd>
+<kbd>
+  <img src="img/03.png" width="35%" alt="RoomReservationAngular_03">
+</kbd>
+<kbd>
+  <img src="img/04.png" width="35%" alt="RoomReservationAngular_04">
+</kbd>
+<kbd>
+  <img src="img/05.png" width="35%" alt="RoomReservationAngular_05">
+</kbd>
+<kbd>
+  <img src="img/06.png" width="25%" alt="RoomReservationAngular_06">
+</kbd>
+<kbd>
+  <img src="img/07.png" width="35%" alt="RoomReservationAngular_07">
+</kbd>
+<kbd>
+  <img src="img/08.png" width="25%" alt="RoomReservationAngular_08">
+</kbd>
+<kbd>
+  <img src="img/09.png" width="35%" alt="RoomReservationAngular_09">
+</kbd>
+<kbd>
+  <img src="img/10.png" width="25%" alt="RoomReservationAngular_10">
+</kbd>
+<kbd>
+  <img src="img/11.png" width="25%" alt="RoomReservationAngular_11">
+</kbd>
+<kbd>
+  <img src="img/12.png" width="20%" alt="RoomReservationAngular_12">
+</kbd>
+<kbd>
+  <img src="img/13.png" width="25%" alt="RoomReservationAngular_13">
+</kbd>
 
 RoomReservationAngular/  
 ├─── app/  
@@ -77,8 +104,10 @@ RoomReservationAngular/
 │   ├─── guards/    
 │   │   └─── admin.guard.ts    
 │   ├─── layout/   
-│   │   └─── navbar/    
-│   │            └─── navbar.component.ts    
+│   │   ├─── navbar/    
+│   │   │        └─── navbar.component.ts   
+│   │   └─── shared/    
+│   │            └─── footer.component.ts  
 │   ├─── models/  
 │   │    ├─── auth.model.ts  
 │   │    ├─── reservation.model.ts  

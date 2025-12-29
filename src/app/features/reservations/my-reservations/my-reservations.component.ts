@@ -2,9 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReservationService } from '../../../services/reservation.service';
 import { Reservation } from '../../../models/reservation.model';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { Observable, forkJoin } from 'rxjs';
+import { map, switchMap } from 'rxjs/operators';
 import { ConfirmationModalComponent } from '../../rooms/confirmation-modal/confirmation-modal.component';
+import { RoomService } from '../../../services/room.service';
 
 @Component({
   selector: 'app-my-reservations',
@@ -46,13 +47,16 @@ import { ConfirmationModalComponent } from '../../rooms/confirmation-modal/confi
                       >
                         Status
                       </th>
+                      <th scope="col" class="relative px-6 py-3">
+                        <span class="sr-only">Actions</span>
+                      </th>
                     </tr>
                   </thead>
                   <tbody class="bg-white divide-y divide-gray-200">
-                    <tr *ngFor="let reservation of reservations$ | async">
+                    @for (reservation of reservations$ | async; track reservation.reservationId) {
+                    <tr>
                       <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                        Room #{{ reservation.roomId }}
-                        <!-- Ideally fetch Room Number via service or expand logic -->
+                        Room {{ reservation.room?.roomNumber || '#' + reservation.roomId }}
                       </td>
                       <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                         {{ reservation.checkInDate | date }}
@@ -60,7 +64,7 @@ import { ConfirmationModalComponent } from '../../rooms/confirmation-modal/confi
                       <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                         {{ reservation.checkOutDate | date }}
                       </td>
-                      <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"></td>
+
                       <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                         <span
                           [ngClass]="{
@@ -102,6 +106,7 @@ import { ConfirmationModalComponent } from '../../rooms/confirmation-modal/confi
                         </a>
                       </td>
                     </tr>
+                    }
                   </tbody>
                 </table>
               </div>
@@ -138,16 +143,40 @@ export class MyReservationsComponent implements OnInit {
   errorMessage: string = '';
   private reservationIdToCancel: number | null = null;
 
-  constructor(private reservationService: ReservationService) {}
+  constructor(private reservationService: ReservationService, private roomService: RoomService) {}
 
   ngOnInit(): void {
     this.loadReservations();
   }
 
   loadReservations(): void {
-    this.reservations$ = this.reservationService
-      .getMyReservations()
-      .pipe(map((reservations) => reservations.filter((r) => r.statusId !== 5)));
+    this.reservations$ = this.reservationService.getMyReservations().pipe(
+      map((reservations) => reservations.filter((r) => r.statusId !== 5)),
+      switchMap((reservations) => {
+        // Collect unique room IDs that need fetching
+        const roomIds = [...new Set(reservations.map((r) => r.roomId))];
+
+        if (roomIds.length === 0) {
+          return [reservations];
+        }
+
+        // Fetch all rooms in parallel
+        const roomRequests = roomIds.map((id) => this.roomService.getRoom(id));
+
+        return forkJoin(roomRequests).pipe(
+          map((rooms) => {
+            // Map rooms back to reservations
+            return reservations.map((reservation) => {
+              const foundRoom = rooms.find((r) => r.roomId === reservation.roomId);
+              if (foundRoom) {
+                reservation.room = foundRoom;
+              }
+              return reservation;
+            });
+          })
+        );
+      })
+    );
   }
 
   openCancelModal(id: number): void {

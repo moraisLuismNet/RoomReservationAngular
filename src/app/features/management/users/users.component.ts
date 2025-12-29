@@ -36,7 +36,8 @@ import { User } from '../../../models/user.model';
                 </tr>
               </thead>
               <tbody class="bg-white divide-y divide-gray-200">
-                <tr *ngFor="let user of users">
+                @for (user of users; track user.email) {
+                <tr>
                   <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                     {{ user.email }}
                   </td>
@@ -55,6 +56,7 @@ import { User } from '../../../models/user.model';
                     </span>
                   </td>
                 </tr>
+                }
               </tbody>
             </table>
           </div>
